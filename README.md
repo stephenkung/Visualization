@@ -1,5 +1,5 @@
 # Visualization
 visualizaiton course work from UH    
 
-## some result:
+## some results:
 ![image](cylinder.PNG)
