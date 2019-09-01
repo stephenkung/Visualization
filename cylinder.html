@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+</head>
+<body>
+    <div>
+        <input type="file" id="files" style="display: none" onchange="fileImport();">
+        <input type="button" id="fileImport" value="Import File">
+    </div>
+	<div id="container" style="width: 1000px; height: 600px; margin: 0 auto"></div>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+    <script>
+		var content;
+	
+        //点击导入按钮,使files触发点击事件,然后完成读取文件的操作
+        $("#fileImport").click(function () {
+            $("#files").click();
+        })
+        function fileImport() {
+            //获取读取我文件的File对象
+            var selectedFile = document.getElementById('files').files[0];
+            var name = selectedFile.name;//读取选中文件的文件名
+            var size = selectedFile.size;//读取选中文件的大小
+            console.log("文件名:"+name+"大小:"+size);
+
+            var reader = new FileReader();//这是核心,读取操作就是由它完成.
+            reader.readAsText(selectedFile);//读取文件的内容,也可以读取文件的URL
+            reader.onload = function () {
+                //当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
+				content = this.result;
+                //console.log(content.length);
+				
+				
+			//begin to draw	
+			var x=[];
+			for(var k=0; k<250; k++){
+				x[k]=k;
+			}
+			
+			var y = new Array(10);
+			for (var i = 0; i < y.length; i++) {
+				y[i] = [];
+			}
+			
+			content.trim().split('\n').forEach(function(v, i) {
+				window['str' + (i+1)] = v;
+				//console.log(v);
+				var str_temp = v;  
+				str_temp = str_temp.split(" ");
+				console.log("y length:", str_temp.length);
+				for(var j =0; j < str_temp.length; j++){
+					y[i].push(parseFloat(str_temp[j]));
+				}
+				console.log(y[i].length);
+		})
+		
+				
+//begin to draw				
+$(document).ready(function() {
+   var title = {
+      text: 'Cylinder'   
+   };
+   
+   var xAxis = {
+      categories: x
+   };
+   var yAxis = {
+      title: {
+         text: 'Value'
+      },
+      plotLines: [{
+         value: 0,
+         width: 1,
+         color: '#808080'
+      }]
+   };   
+   
+
+   var legend = {
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
+      borderWidth: 0
+   };
+
+   var series =  [
+      {name: 'line 1', data: y[0].slice(0,250) },
+	  {name: 'line 2', data: y[1].slice(0,250) },
+	  {name: 'line 3', data: y[2].slice(0,250) },
+	  {name: 'line 4', data: y[3].slice(0,250) },
+	  {name: 'line 5', data: y[4].slice(0,250) },
+	  {name: 'line 6', data: y[5].slice(0,250) },
+	  {name: 'line 7', data: y[6].slice(0,250) },
+	  {name: 'line 8', data: y[7].slice(0,250) },
+	  {name: 'line 9', data: y[8].slice(0,250) },
+	  {name: 'line 10', data: y[9].slice(0,250) }
+   ];
+
+
+   var json = {};
+   json.title = title;
+   json.xAxis = xAxis;
+   json.yAxis = yAxis;
+   //json.tooltip = tooltip;
+   json.legend = legend;
+   json.series = series;
+
+   $('#container').highcharts(json);	
+				
+})
+		}	
+
+	}
+    </script>
+</body>
+</html>

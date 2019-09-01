@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+<div id="container" style="width: 1000px; height: 600px; margin: 0 auto"></div>
+<div id="container1" style="width: 1000px; height: 600px; margin: 0 auto"></div>
+<script>
+var date = [];
+var pm25 = [];
+var aqi = [];
+var obs = [];
+var low = 15;
+var high = 85;
+d3.csv("./Data/Weather/Houston_Woodland_PM2.5_2018.csv", function(data) {	
+	for (var i = 0; i < data.length; i++) {
+		date.push(data[i]["Date"]);
+		pm25[i] = parseFloat(data[i]["Daily Mean PM2.5 Concentration"]);
+		aqi[i] = parseInt(data[i]["DAILY_AQI_VALUE"]);
+		obs[i] = data[i]["DAILY_OBS_COUNT"];
+	}
+	//console.log(date.length, pm25.length, aqi.length, obs.length);
+	//console.log(pm25.slice(0,12))
+	
+	$(document).ready(function() {
+   var title = {
+      text: 'PM2.5 2018'   
+   };
+
+   var title1 = {
+      text: 'DAILY_AQI_VALUE'   
+   };
+   
+   var xAxis = {
+      categories: date.slice(low,high)
+   };
+   var yAxis = {
+      title: {
+         text: 'PM2.5 2018'
+      },
+      plotLines: [{
+         value: 0,
+         width: 1,
+         color: '#808080'
+      }]
+   };   
+   
+   var yAxis1 = {
+      title: {
+         text: 'DAILY_AQI_VALUE'
+      },
+      plotLines: [{
+         value: 0,
+         width: 1,
+         color: '#808080'
+      }]
+   };
+   
+   var tooltip = {
+      valueSuffix: 'ug/m3 LC'
+   }
+   
+   var tooltip1 = {
+   } 
+
+   var legend = {
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle',
+      borderWidth: 0
+   };
+
+   var series =  [
+      {
+         name: 'Daily Mean PM2.5 Concentration',
+         data: pm25.slice(low,high)
+      } 
+   ];
+
+    var series1 =  [
+      {
+         name: 'DAILY_AQI_VALUE',
+         data: aqi.slice(low,high)
+      } 
+   ];
+   var json = {};
+
+   json.title = title;
+   json.xAxis = xAxis;
+   json.yAxis = yAxis;
+   json.tooltip = tooltip;
+   json.legend = legend;
+   json.series = series;
+
+   $('#container').highcharts(json);
+   
+   json.title = title1;
+   //json.xAxis = xAxis;
+   json.yAxis = yAxis1;
+   json.tooltip = tooltip1;
+   //json.legend = legend;
+   json.series = series1;
+   $('#container1').highcharts(json);
+   
+   
+});
+		
+	
+});   
+
+</script>
+</body>
+</html>
+
