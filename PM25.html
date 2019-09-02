@@ -8,6 +8,7 @@
 <body>
 <div id="container" style="width: 1000px; height: 600px; margin: 0 auto"></div>
 <div id="container1" style="width: 1000px; height: 600px; margin: 0 auto"></div>
+<div id="container2" style="width: 1000px; height: 600px; margin: 0 auto"></div>
 <script>
 var date = [];
 var pm25 = [];
@@ -23,7 +24,7 @@ d3.csv("./Data/Weather/Houston_Woodland_PM2.5_2018.csv", function(data) {
 		obs[i] = data[i]["DAILY_OBS_COUNT"];
 	}
 	//console.log(date.length, pm25.length, aqi.length, obs.length);
-	//console.log(pm25.slice(0,12))
+	//console.log(Math.max(-10, -32, -1))
 	
 	$(document).ready(function() {
    var title = {
@@ -104,6 +105,48 @@ d3.csv("./Data/Weather/Houston_Woodland_PM2.5_2018.csv", function(data) {
    //json.legend = legend;
    json.series = series1;
    $('#container1').highcharts(json);
+   
+   //combine together
+   let pm_max = Math.max(...pm25.slice(low,high));
+   let aqi_max = Math.max(...aqi.slice(low,high));
+   for (var k=low; k<high; k++){
+		pm25[k] = pm25[k]/pm_max;
+		aqi[k] = aqi[k]/aqi_max;
+   }
+   
+   console.log(pm_max, aqi_max)
+     var series2 =  [
+	   {
+         name: 'Daily Mean PM2.5 Concentration',
+         data: pm25.slice(low,high)
+      },
+	 
+      {
+         name: 'DAILY_AQI_VALUE',
+         data: aqi.slice(low,high)
+      }	  
+   ];  
+   
+    var title2 = {
+      text: 'PM2.5 - AQI with normalization'   
+   };
+   
+   var yAxis2 = {
+      title: {
+         text: 'Normalized value'
+      },
+      plotLines: [{
+         value: 0,
+         width: 1,
+         color: '#808080'
+      }]
+   };   
+   
+   
+   	json.series = series2;
+    json.title = title2;	
+    json.yAxis = yAxis2;
+	$('#container2').highcharts(json);
    
    
 });
